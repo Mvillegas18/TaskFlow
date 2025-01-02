@@ -27,5 +27,5 @@ router.get(
 	'/:id',
 	param('id').isMongoId().withMessage('ID no valido'),
 	handleInputErrors,
-	ProjectController.getByIdProjects
+	ProjectController.getProyectById
 );
