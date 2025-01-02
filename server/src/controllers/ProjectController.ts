@@ -25,6 +25,8 @@ export class ProjectController {
 	static getProyectById = async (req: Request, res: Response) => {
 		try {
 			const { id } = req.params;
+			if (!id) res.status(400).json({ error: 'El id no existe' });
+
 			const project = await Project.findById(id);
 
 			if (!project) {
@@ -39,5 +41,24 @@ export class ProjectController {
 		} catch (error) {
 			console.log({ error });
 		}
+	};
+
+	static updateProject = async (req: Request, res: Response) => {
+		try {
+			const { id } = req.params;
+
+			const project = await Project.findByIdAndUpdate(id, req.body);
+
+			if (!project) {
+				res
+					.status(404)
+					.json({ error: new Error('Proyecto no encontrado').message });
+				return;
+			}
+
+			await project?.save();
+
+			res.status(201).json({ proyecto: 'Proyecto actualizado' });
+		} catch (error) {}
 	};
 }
