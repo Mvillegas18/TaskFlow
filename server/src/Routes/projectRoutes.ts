@@ -68,3 +68,10 @@ router.post(
 	validateProjectExist,
 	TaskController.createTask
 );
+
+router.get(
+	'/:projectId/task',
+	param('projectId').notEmpty().withMessage('ID no valido'),
+	validateProjectExist,
+	TaskController.getProjectTask
+);
