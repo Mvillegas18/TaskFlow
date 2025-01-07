@@ -28,17 +28,10 @@ export class TaskController {
 
 	static getTaskById = async (req: Request, res: Response) => {
 		try {
-			const { taskId } = req.params;
-			const task = await Task.findById(taskId);
-			if (!task) {
-				res
-					.status(404)
-					.json({ error: new Error('Tarea no encontrada').message });
-			}
-			if (task?.project.toString() !== req.project.id) {
+			if (req.task?.project.toString() !== req.project.id) {
 				res.status(400).json({ error: new Error('Accion no valida').message });
 			}
-			res.json(task);
+			res.json(req.task);
 		} catch (error) {
 			res.status(500).json({ error });
 		}
@@ -46,19 +39,12 @@ export class TaskController {
 
 	static updateTask = async (req: Request, res: Response) => {
 		try {
-			const { taskId } = req.params;
-			const task = await Task.findById(taskId);
-			if (!task) {
-				res
-					.status(404)
-					.json({ error: new Error('Tarea no encontrada').message });
-			}
-			if (task?.project.toString() !== req.project.id) {
+			if (req.task?.project.toString() !== req.project.id) {
 				res.status(400).json({ error: new Error('Accion no valida').message });
 			}
-			if (task) {
-				task.name = req.body.name;
-				task.description = req.body.description;
+			if (req.task) {
+				req.task.name = req.body.name;
+				req.task.description = req.body.description;
 			}
 			res.send('Tarea actualizada correctamente');
 		} catch (error) {
@@ -68,18 +54,10 @@ export class TaskController {
 
 	static deleteTask = async (req: Request, res: Response) => {
 		try {
-			const { taskId } = req.params;
-			const task = await Task.findById(taskId);
-			if (!task) {
-				res
-					.status(404)
-					.json({ error: new Error('Tarea no encontrada').message });
-			}
-
 			req.project.tasks = req.project.tasks.filter(
-				(task) => task?.toString() !== taskId
+				(task) => task?.toString() !== req.task.id.toString()
 			);
-			await Promise.allSettled([Task.deleteOne(), req.project.save()]);
+			await Promise.allSettled([req.task.deleteOne(), req.project.save()]);
 			res.send('Tarea eliminada correctamente');
 		} catch (error) {
 			res.status(500).json({ error });
@@ -88,19 +66,11 @@ export class TaskController {
 
 	static updateStatus = async (req: Request, res: Response) => {
 		try {
-			const { taskId } = req.params;
-
-			const task = await Task.findById(taskId);
-			if (!task) {
-				res
-					.status(404)
-					.json({ error: new Error('Tarea no encontrada').message });
-			}
 			const { status } = req.body;
-			if (task) {
-				task.status = status;
+			if (req.task) {
+				req.task.status = status;
 			}
-			await task?.save();
+			await req.task?.save();
 			res.send('Estado actualizado');
 		} catch (error) {
 			res.status(500).json({ error });
