@@ -1,5 +1,6 @@
+import { Logo } from '@/components/Logo';
+import NavMenu from '@/components/NavMenu';
 import { Outlet } from 'react-router-dom';
-import { Logo } from '../components/Logo';
 
 export const AppLayout = () => {
 	return (
@@ -7,8 +8,11 @@ export const AppLayout = () => {
 			<header className='bg-gradient-to-r from-blue-900 via-blue-800 to-blue-700 py-4 shadow-lg'>
 				<div className='max-w-screen-2xl mx-auto flex flex-col lg:flex-row justify-between items-center px-6'>
 					{/* Logo */}
-					<div className='w-32'>
+					<div className='w-28'>
 						<Logo />
+					</div>
+					<div className='pr-28'>
+						<NavMenu />
 					</div>
 				</div>
 			</header>
