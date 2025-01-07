@@ -29,3 +29,14 @@ export const taskExist = async (
 		res.status(505).json({ error: 'Hubo un error' });
 	}
 };
+
+export const taskBelongToProject = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	if (req.task?.project.toString() !== req.project.id.toString()) {
+		res.status(400).json({ error: new Error('Accion no valida').message });
+	}
+	next();
+};
