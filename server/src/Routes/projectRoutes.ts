@@ -2,7 +2,8 @@ import { Router } from 'express';
 import { body, param } from 'express-validator';
 import { ProjectController } from '../controllers/ProjectController';
 import { TaskController } from '../controllers/TaskController';
-import { validateProjectExist } from '../middleware/project';
+import { projectExist } from '../middleware/project';
+import { taskExist } from '../middleware/task';
 import { handleInputErrors } from '../middleware/validation';
 
 export const router = Router();
@@ -58,7 +59,7 @@ router.delete(
 );
 
 // Routes for tasks
-router.param('projectId', validateProjectExist);
+router.param('projectId', projectExist);
 
 router.post(
 	'/:projectId/task',
@@ -71,6 +72,7 @@ router.post(
 
 router.get('/:projectId/task', TaskController.getProjectTask);
 
+router.param('taskId', taskExist);
 router.get(
 	'/:projectId/task/:taskId',
 	param('taskId').notEmpty().withMessage('ID de la tarea no valido'),
