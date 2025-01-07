@@ -69,7 +69,7 @@ export class TaskController {
 	static deleteTask = async (req: Request, res: Response) => {
 		try {
 			const { taskId } = req.params;
-			const task = await Task.findById(taskId, req.body);
+			const task = await Task.findById(taskId);
 			if (!task) {
 				res
 					.status(404)
@@ -81,6 +81,27 @@ export class TaskController {
 			);
 			await Promise.allSettled([Task.deleteOne(), req.project.save()]);
 			res.send('Tarea eliminada correctamente');
+		} catch (error) {
+			res.status(500).json({ error });
+		}
+	};
+
+	static updateStatus = async (req: Request, res: Response) => {
+		try {
+			const { taskId } = req.params;
+
+			const task = await Task.findById(taskId);
+			if (!task) {
+				res
+					.status(404)
+					.json({ error: new Error('Tarea no encontrada').message });
+			}
+			const { status } = req.body;
+			if (task) {
+				task.status = status;
+			}
+			await task?.save();
+			res.send('Estado actualizado');
 		} catch (error) {
 			res.status(500).json({ error });
 		}
