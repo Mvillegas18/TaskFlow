@@ -58,6 +58,7 @@ router.delete(
 );
 
 // Routes for tasks
+router.param('projectId', validateProjectExist);
 
 router.post(
 	'/:projectId/task',
@@ -65,13 +66,14 @@ router.post(
 	body('name').notEmpty().withMessage('El nombre de la tarea es obligatoria'),
 	body('description').notEmpty().withMessage('La descripcion es obligatoria'),
 	handleInputErrors,
-	validateProjectExist,
 	TaskController.createTask
 );
 
+router.get('/:projectId/task', TaskController.getProjectTask);
+
 router.get(
-	'/:projectId/task',
-	param('projectId').notEmpty().withMessage('ID no valido'),
-	validateProjectExist,
-	TaskController.getProjectTask
+	'/:projectId/task/:taskId',
+	param('taskId').notEmpty().withMessage('El id de la tarea no es valido'),
+	handleInputErrors,
+	TaskController.getTaskById
 );
