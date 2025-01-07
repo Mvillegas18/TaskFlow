@@ -46,7 +46,7 @@ export class ProjectController {
 		try {
 			const { id } = req.params;
 
-			const project = await Project.findByIdAndUpdate(id, req.body);
+			const project = await Project.findById(id);
 
 			if (!project) {
 				res
@@ -54,7 +54,9 @@ export class ProjectController {
 					.json({ error: new Error('Proyecto no encontrado').message });
 				return;
 			}
-
+			project.clientName = req.body.clientName;
+			project.projectName = req.body.projectName;
+			project.description = req.body.description;
 			await project?.save();
 
 			res.status(201).json({ proyecto: 'Proyecto actualizado' });
